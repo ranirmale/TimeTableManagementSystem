@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<bean id="dataSource"
+     class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+    <property name="url" value="jdbc:mysql://localhost:3306/timetable123"> </property>
+    <property name="username" value="root"></property>
+    <property name="password" value="admin"></property>
+  </bean>
+  
+  <bean id="sessionFactory"
+    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"></property>
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+        <prop key="hibernate.hbm2ddl.auto">update</prop>
+      </props>
+    </property>
+    <property name="annotatedClasses">
+       <list>
+         <value>com.ttmgmt.domain.User</value>
+         <value>com.ttmgmt.domain.FacultyBean</value>
+         <value>com.ttmgmt.domain.SubjectBean</value>
+         <value>com.ttmgmt.domain.TimeTableBean</value>
+       </list>
+    </property>
+  </bean>
+   
+  <bean id="transactionManager"
+       class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+       <property name="sessionFactory" ref="sessionFactory"></property>
+  </bean>
+  
+  <bean id="baseDao" class="com.ttmgmt.dao.BaseDaoImpl">
+    <property name="sessionFactory" ref="sessionFactory"></property>
+  </bean>
+  
+  <bean id="facultyDao" class="com.ttmgmt.dao.FacultyDaoImpl">
+    <property name="sessionFactory" ref="sessionFactory"></property>
+  </bean>
+  
+		
+  <bean id="subjectDao" class="com.ttmgmt.dao.SubjectDaoImpl">
+    <property name="sessionFactory" ref="sessionFactory"></property>
+  </bean>
+  
+  <bean id="ttDao" class="com.ttmgmt.dao.TimeTableDaoImpl">
+    <property name="sessionFactory" ref="sessionFactory"></property>
+  </bean>
+  		
+		
+   <bean id="homeService" class="com.ttmgmt.service.HomeServiceImpl">
+    <property name="baseDao" ref="baseDao"></property>
+  </bean>	
+  
+  <bean id="facultyService" class="com.ttmgmt.service.FacultyServiceImpl">
+    <property name="facultyDao" ref="facultyDao"></property>
+  </bean>	
+  
+  <bean id="subjectService" class="com.ttmgmt.service.SubjectServiceImpl">
+    <property name="subjectDao" ref="subjectDao"></property>
+  </bean>	
+  
+  <bean id="ttService" class="com.ttmgmt.service.TimeTableServiceImpl">
+    <property name="ttDao" ref="ttDao"></property>
+  </bean>	
+		
+</beans>
